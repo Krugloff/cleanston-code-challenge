@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html class="h-full">
   <head>
     <title><%= content_for(:title) || "Cleanston Code Challenge" %></title>
     <meta name="viewport" content="width=device-width,initial-scale=1">
@@ -18,9 +18,27 @@
     <%= javascript_importmap_tags %>
   </head>
 
-  <body>
-    <main class="container mx-auto mt-28 px-5 flex">
-      <%= yield %>
+  <body class="h-full flex flex-col">
+    <section>
+      <header class="flex flex-row justify-center my-5">
+        <h1 class="basis-8/12">
+          <%= image_tag "/logo.png", class: "w-48" %>
+        </h1>
+
+        <%= form_with model: Cart.new, class: "text-end font-light content-end" do |form| %>
+          <%= form.button 'generate new cart' %>
+        <% end %>
+      </header>
+
+      <hr/>
+    </section>
+
+    <main class="container mx-auto mt-10 grow">
+      <section class="flex justify-center h-full">
+        <section class="basis-8/12">
+          <%= yield %>
+        </section>
+      </section>
     </main>
   </body>
 </html>

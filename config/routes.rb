@@ -10,5 +10,14 @@ Rails.application.routes.draw do
   get "manifest" => "rails/pwa#manifest", as: :pwa_manifest
 
   # Defines the root path route ("/")
-  # root "posts#index"
+  root to: redirect('cart')
+
+  resources :orders, only: %i(create)
+  resource :cart, only: %i(show create destroy)
+
+  resources :cart_items, only: %i(update destroy)
+
+  # https://github.com/rails/rails/issues/49604
+  # Looooooool
+  resolve("Cart") { [:cart] }
 end

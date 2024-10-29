@@ -1,0 +1,93 @@
+<header class="flex flex-row">
+  <h1 class="basis-6/12 text-2xl font-bold"><%= t(".basket") %></h1>
+
+  <%= form_with model: @cart, class: "inline text-end basis-6/12", method: :delete do |form| %>
+    <%= form.button t(".clean_basket"), class: "text-sm text-slate-400" %>
+  <% end %>
+</header>
+
+<section class="mt-10" kind_of="items">
+  <% @cart.cart_items.each do |item| %>
+    <%# TODO: it is not very good solution... %>
+    <%# TODO: first click to zero quantity second click to removed status %>
+    <%= form_with model: item, class: "float-right -ml-16 mt-5 inline" do |form| %>
+      <% if form.object.quantity.zero? %>
+        <%= form.button basket_icon, formmethod: :delete, class: "text-red-500" %>
+      <% else %>
+        <%= form.hidden_field :quantity, value: 0 %>
+        <%= form.button basket_icon, class: "text-slate-400" %>
+      <% end %>
+    <% end %>
+
+    <section class="flex flex-row my-2 space-x-5" kind_of="item">
+      <%= image_tag item.product_picture.variant(:thumb), class: "basis-2/12" %>
+
+      <span class="basis-5/12 font-light content-center">
+        <span class="<%= item.quantity.zero? && "line-through" %>">
+          <%= item.product_name %>
+        </span>
+      </span>
+
+      <div class="flex flex-row justify-around self-center h-fit bg-slate-100 space-x-1 px-1 basis-1/12 rounded-md">
+        <%= form_with model: item do |form| %>
+          <%= form.hidden_field :quantity, value: form.object.quantity.pred %>
+          <%= form.button "-", type: 'submit', disabled: form.object.quantity.zero? %>
+        <% end %>
+
+        <span class="font-medium"><%= item.quantity %></span>
+
+        <%= form_with model: item do |form| %>
+          <%= form.hidden_field :quantity, value: form.object.quantity.next %>
+          <%= form.button "+", type: 'submit' %>
+        <% end %>
+      </div>
+
+      <div class="basis-4/12 flex flex-col items-end self-center font-medium">
+        <span class="">
+          <span class="<%= item.quantity.zero? && "line-through" %>">
+            <%= number_to_currency item.total %>
+          </span>
+        </span>
+      </div>
+    </section>
+
+    <hr/>
+  <% end %>
+</section>
+
+<br>
+
+<section class="border border-solid rounded p-4" kind_of="cost">
+  <section kind_of="initial-cost">
+
+  </section>
+
+  <hr/>
+
+  <section class="flex flex-row mt-5">
+    <span class="basis-1/2 font-medium"><%= t(".cart_total") %></span>
+    <span class="text-end basis-1/2 font-bold text-xl">
+      <%= number_to_currency @cart.total %>
+    </span>
+
+  </section>
+</section>
+
+<section class="mt-10">
+  <%# TODO: this is a mock %>
+  <%= form_with scope: :order, url: orders_path, method: :post do |form| %>
+    <%# TODO %>
+    <%#= form.hidden_field :discount %>
+
+    <%# TODO rails can't handle collection for fields_for
+      if that collection is not part of nested attributes %>
+    <% @cart.cart_items.each do |item| %>
+      <%= form.fields_for "ordered_items[]", item do |field| %>
+        <%= field.hidden_field :product_id %>
+        <%= field.hidden_field :quantity %>
+      <% end %>
+    <% end %>
+
+    <%= form.button t(".create_order"), class: "w-full bg-emerald-300 rounded-md text-center text-white p-2" %>
+  <% end %>
+</section>

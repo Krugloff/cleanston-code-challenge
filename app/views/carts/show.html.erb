@@ -1,0 +1,7 @@
+<turbo-frame id="cart" refresh="morph" class="flex flex-col h-full">
+  <% if @cart.empty? %>
+    <%= render "carts/empty" %>
+  <% else %>
+    <%= render "carts/filled" %>
+  <% end %>
+</turbo-frame>

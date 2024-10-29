@@ -1,0 +1,15 @@
+ru:
+  number:
+    currency:
+      format:
+        unit: ₽
+        # TODO: remove if you need float digits
+        precision: 0
+  carts:
+    filled:
+      basket: Корзина
+      clean_basket: Очистить корзину
+      cart_total: Сумма заказа
+      create_order: Оформить
+    empty:
+      basket: Корзина
